@@ -1,15 +1,21 @@
 #include "gpsitemspreview.h"
 #include "ui_gpsitemspreview.h"
-#include "map-pgs/mapwidget.h"
-#include "gui-src/settloader.h"
-#include "src/matilda/moji_defy.h"
-#include "gui-src/showmesshelper4wdgt.h"
-
-#include "src/matilda/matildalimits.h"
+#include <QShortcut>
 #include <QMessageBox>
+
+
+///[!] map-widget
+#include "map-pgs/mapwidget.h"
+
+
+///[!] guisett-shared
+#include "gui-src/settloader.h"
+#include "gui-src/showmesshelpercore.h"
 #include "src/widgets/tableheaders.h"
 
-#include <QShortcut>
+
+#include "moji_defy.h"
+#include "matildalimits.h"
 
 GpsItemsPreview::GpsItemsPreview(LastDevInfo *lDevInfo, GuiHelper *gHelper, GuiSett4all *gSett4all, QWidget *parent) :
     ReferenceWidgetClass(lDevInfo, gHelper, gSett4all, parent),
@@ -236,6 +242,6 @@ void GpsItemsPreview::onModelChanged()
 
 void GpsItemsPreview::on_tvTable_customContextMenuRequested(const QPoint &pos)
 {
-    gHelper->createCustomMenu(pos, ui->tvTable, (GuiHelper::ShowReset|GuiHelper::ShowExport|GuiHelper::ShowOnlyCopy), CLBRD_SMPL_PRXTBL, ShowMessHelper4wdgt::matildaFileName(windowTitle()));
+    gHelper->createCustomMenu(pos, ui->tvTable, (GuiHelper::ShowReset|GuiHelper::ShowExport|GuiHelper::ShowOnlyCopy), CLBRD_SMPL_PRXTBL, ShowMessHelperCore::matildaFileName(windowTitle()));
 
 }

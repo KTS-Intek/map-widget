@@ -3,9 +3,12 @@
 #include <QWindow>
 #include <QQmlContext>
 #include <QQuickView>
-
-#include "qml-geo/qml2cpp.h"
 #include <QQmlError>
+
+
+///[!] qml-geo
+#include "qml-geo/qml2cpp.h"
+
 
 //---------------------------------------------------------------------------------------------------------
 MapWidget::MapWidget(bool isReadOnly, const QString mapTitle, QWidget *parent) :

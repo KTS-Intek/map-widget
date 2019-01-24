@@ -1,3 +1,13 @@
+# Version=0.0.1
+#
+# Dependencies
+# map-widget
+# qml-geo   ->
+# guisett-shared
+#
+#
+#
+
 INCLUDEPATH  += $$PWD\
                 $$PWD/../../defines/defines
                 $$PWD/../../defines/define-types

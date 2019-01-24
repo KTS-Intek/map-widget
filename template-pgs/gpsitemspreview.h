@@ -1,7 +1,10 @@
 #ifndef GPSITEMSPREVIEW_H
 #define GPSITEMSPREVIEW_H
 
+
+///[!] widgets-shared
 #include "gui-src/referencewidgetclass.h"
+
 
 namespace Ui {
 class GpsItemsPreview;
