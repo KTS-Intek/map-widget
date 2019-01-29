@@ -8,10 +8,10 @@
 #include "map-pgs/mapwidget.h"
 
 
-///[!] guisett-shared
-#include "gui-src/settloader.h"
-#include "gui-src/showmesshelpercore.h"
-#include "src/widgets/tableheaders.h"
+///[!] guisett-shared-core
+#include "src/nongui/settloader.h"
+#include "src/nongui/showmesshelpercore.h"
+#include "src/nongui/tableheaders.h"
 
 
 #include "moji_defy.h"
