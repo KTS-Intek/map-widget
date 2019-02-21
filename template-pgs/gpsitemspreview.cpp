@@ -17,8 +17,8 @@
 #include "moji_defy.h"
 #include "matildalimits.h"
 
-GpsItemsPreview::GpsItemsPreview(LastDevInfo *lDevInfo, GuiHelper *gHelper, GuiSett4all *gSett4all, QWidget *parent) :
-    ReferenceWidgetClass(lDevInfo, gHelper, gSett4all, parent),
+GpsItemsPreview::GpsItemsPreview(GuiHelper *gHelper, QWidget *parent) :
+    ReferenceWidgetClass(gHelper, parent),
     ui(new Ui::GpsItemsPreview)
 {
     ui->setupUi(this);
@@ -65,7 +65,7 @@ void GpsItemsPreview::clearPage()
     ui->tbShowMap->setChecked(false);
 
 
-    StandardItemModelHelper::modelSetHorizontalHeaderItems(model , getHeader4meterType());
+    StandardItemModelHelper::setModelHorizontalHeaderItems(model , getHeader4meterType());
 
 }
 
@@ -124,7 +124,7 @@ void GpsItemsPreview::addMeters2list(bool replaceAll, QVariantHash meters)
     QMenu *menu = new QMenu(ui->tvTable);
     QAction *a = new QAction(menu);
     if(replaceAll || model->rowCount() < 1)
-        StandardItemModelHelper::modelSetHorizontalHeaderItems(model, getHeader4meterType());
+        StandardItemModelHelper::setModelHorizontalHeaderItems(model, getHeader4meterType());
     gHelper->hashData2table(meters, a);
     menu->deleteLater();
     sayModelChangedLater();
@@ -188,7 +188,6 @@ void GpsItemsPreview::onModelChanged()
 {
     QVariantList vl;
 
-    //    QStringList l = GuiHelper::getColNamesLedLamp().split(",");
     //tr("Model,NI,Group,Last Exchange,Power [%],Start Power [%],NA Power [%],Tna [sec],Coordinate,Poll On/Off,Street,Memo") ;
 
     //return tr("Model,Serial Number,NI,Memo,Password,On/Off,Energy,Tariff                  ,Coordinate,Meter Version")

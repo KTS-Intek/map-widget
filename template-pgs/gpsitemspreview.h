@@ -15,7 +15,7 @@ class GpsItemsPreview : public ReferenceWidgetClass
     Q_OBJECT
 
 public:
-    explicit GpsItemsPreview(LastDevInfo *lDevInfo, GuiHelper *gHelper, GuiSett4all *gSett4all, QWidget *parent = nullptr);
+    explicit GpsItemsPreview(GuiHelper *gHelper, QWidget *parent = nullptr);
     ~GpsItemsPreview();
 
     QStringList getHeader4meterType();
