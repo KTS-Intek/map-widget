@@ -99,7 +99,7 @@ void GpsItemsPreview::removeDevice(QString ni)
 
     if(row < 0)
         return;
-    gHelper->deleteThisRowsFromTv(QList<int>() << row , ui->tvTable, model);
+    gHelper->deleteTheseRowsFromTv(QList<int>() << row , ui->tvTable, model);
     sayModelChanged();
 }
 
