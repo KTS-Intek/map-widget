@@ -39,7 +39,9 @@ QStringList GpsItemsPreview::getHeader4meterType()
 void GpsItemsPreview::initPage()
 {
     mapIsReady = false;
-    setupObjects(ui->tvTable, ui->tbFilter, ui->cbFilterMode, ui->leFilter, SETT_FILTERS_ITEMS_GPSPOS);
+    setupObjects(ui->horizontalLayout_61, ui->tvTable, ui->tbFilter, ui->cbFilterMode, ui->leFilter, SETT_FILTERS_ITEMS_GPSPOS);
+    connect(this, SIGNAL(openContextMenu(QPoint)), this, SLOT(on_tvTable_customContextMenuRequested(QPoint)));
+
     connectMessSignal();
     clearPage();
 
@@ -79,7 +81,19 @@ void GpsItemsPreview::setPageSett(const QVariantHash &h)
 
 void GpsItemsPreview::showThisDev(QString ni)
 {
+    TableViewHelper::selectRowWithThisCell(lastTv, ni, 2);
+}
 
+void GpsItemsPreview::showContextMenu4thisDev(QString ni)
+{
+    showThisDev(ni);
+    emit request2showContextMenuAnimated();
+}
+
+void GpsItemsPreview::showThisDevInSource(QString ni)
+{
+    showThisDev(ni);
+    ui->tbShowList->animateClick();
 }
 
 void GpsItemsPreview::moveDevice(QVariantHash h)
@@ -171,6 +185,9 @@ void GpsItemsPreview::on_tbShowMap_clicked()
 //        connect(editWdgt, SIGNAL(showThisDev(QString))       , w, SIGNAL(showThisCoordinates(QString))      );
 
         connect(w, SIGNAL(showThisDev(QString))         , this, SLOT(showThisDev(QString))          );
+        connect(w, SIGNAL(showContextMenu4thisDev(QString)), this, SLOT(showContextMenu4thisDev(QString)));
+        connect(w, SIGNAL(showThisDevInSource(QString)), this, SLOT(showThisDevInSource(QString)));
+
         connect(w, SIGNAL(updateModel4ls())             , this, SLOT(onModelChanged())              );
         connect(w, SIGNAL(removeDevice(QString))        , this, SLOT(removeDevice(QString))         );
         connect(w, SIGNAL(moveDevice(QVariantHash))     , this, SLOT(moveDevice(QVariantHash)) );

@@ -45,6 +45,10 @@ public slots:
 
     void showThisDev(QString ni);
 
+    void showContextMenu4thisDev(QString ni);
+
+    void showThisDevInSource(QString ni);
+
     void moveDevice(QVariantHash h);
 
     void removeDevice(QString ni);

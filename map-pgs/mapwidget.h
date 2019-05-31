@@ -32,6 +32,8 @@ signals:
     void addDevice(QString pos);
 
     void showThisDev(QString ni);
+    void showContextMenu4thisDev(QString ni);
+
     void showThisDevInSource(QString ni);
 
     void setThisFontSize(int pixelSize);

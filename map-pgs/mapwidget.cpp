@@ -69,6 +69,8 @@ void MapWidget::showMap(QString lastLang)
 
         connect(qml2cpp, SIGNAL(addDevice(QString))             , this, SIGNAL(addDevice(QString))              );
         connect(qml2cpp, SIGNAL(showThisDev(QString))           , this, SIGNAL(showThisDev(QString))            );
+        connect(qml2cpp, SIGNAL(showContextMenu4thisDev(QString)), this, SIGNAL(showContextMenu4thisDev(QString)));
+
         connect(qml2cpp, SIGNAL(showThisDevInSource(QString))   , this, SIGNAL(showThisDevInSource(QString))            );
 
 //        connect(&qml2cpp, SIGNAL(updateModel4ls())            , this, SIGNAL(updateModel4ls())                );
