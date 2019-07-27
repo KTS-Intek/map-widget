@@ -198,7 +198,7 @@ void GpsItemsPreview::on_tbShowMap_clicked()
 //        connect(ui->tbShowMap, SIGNAL(toggled(bool)), w, SLOT(isParentWidgetVisible(bool)) );
     }
 
-    emit showMap(gHelper->getLastLang());
+    emit showMap(gHelper->guiSett->currLang);
 }
 
 void GpsItemsPreview::onModelChanged()
