@@ -13,6 +13,7 @@ INCLUDEPATH  += $$PWD\
                 $$PWD/../../defines/define-types
 
 include(../qml-geo/qml-geo.pri)
+include(../../gui/qml-gui-core/qml-gui-core.pri)
 
 
 FORMS += \

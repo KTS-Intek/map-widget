@@ -4,6 +4,22 @@
 #include <QWidget>
 #include <QtCore>
 
+#include "medium4modelsdatatypes.h"
+
+///[!] qml-geo I need just roles
+#include "qml-geo-v2/basemapmarkersmodel.h"
+
+struct LastPageSettIcoList
+{
+
+    int icoCol;// = h.value("ico", -1).toInt();
+    QStringList icoList;// = h.value("icos").toStringList();
+    QStringList colData;
+
+    bool enableCaching;
+    LastPageSettIcoList() : icoCol(-1), enableCaching(true) {}
+};
+
 
 namespace Ui {
 class MapWidget;
@@ -17,18 +33,36 @@ public:
     explicit MapWidget(bool isReadOnly = false, const QString mapTitle = "", QWidget *parent = 0);
     ~MapWidget();
 
+
+    static bool tablePageSett2predefined(const QVariantHash &h, const int &column2group, QVariantMap &cachedmap);//true has changes, false - nothing changed
+
+    static bool tablePageSett2predefinedExt(const QVariantHash &h, const QVector<int> &columns2groups, QVariantMap &cachedmap);//true has changes, false - nothing changed
+
 signals:
 
     /// to map
-    void setNewDeviceModel(QVariantList vl);
+//    void setNewDeviceModel(QVariantList vl);
+    void setTableData(MPrintTableOut table, int keycol);//first line is a header
+    void setTableDataExt(const MPrintTableOut &table, const QStringList &header, const int &keycol);
+    void setCoordinatorPosition(qreal x, qreal y, QString sn);
 
-    void showThisDeviceNI(QString ni);
 
-    void showThisDeviceNIQuite(QString ni);
+//    void showThisDeviceNI(QString ni); //deprecated
 
-    void showThisCoordinates(QString c);
+//    void showThisDeviceNIQuite(QString ni);
+
+
+
+    void showThisDeviceKeyValue(QString keyvalue);
+
+    void showThisDeviceKeyValueQuite(QString keyvalue);
+
+
+    void centerMapHere(QVariant pos);
 
     ///from map
+    void mapIsReady();//send devices positions
+
     void addDevice(QString pos);
 
     void showThisDev(QString ni);
@@ -41,7 +75,6 @@ signals:
     void niActivated(QString ni);
 
 
-    void updateModel4ls();
 
 
     void moveDevice(QVariantHash h);
@@ -50,9 +83,20 @@ signals:
 
     void addDeviceStreet(QVariantHash h);
 
-    void addDeviceStreet(QString line);
+    void addDeviceStreetLine(QString line);
 
     void killMapSignal();
+
+
+
+    void setModelHeaderDataRoles(QString columnroles);// list joined with '\n'
+
+
+    //to basemarkermodel
+    void setPredefinedDataImageFilteringSettings(QVariantMap predefinedfiltersettings);
+
+    void setDefaultDataImageFilteringSettings(QVariantMap maponeprofile, QString profilename);
+
 
 public slots:
     void showMap(QString lastLang);
@@ -60,6 +104,29 @@ public slots:
 
     void addDeviceStreetSlot(QVariantHash h);
 
+
+    void addDeviceStreetStr(QString simpletxt, QString pos);
+
+    void moveDeviceStr(QString keyval, QString pos);
+
+    void setNewDeviceModel(QVariantList vl);
+
+
+//from basemarkermodel
+    void gimmeDefaultDataImageFilteringSettings();
+
+
+
+    //from parent
+    //to basemarkermodel
+    void setDefaultDataFilterSettings(QVariantMap maponeprofile, QString profilename);
+
+    void setPredefinedDataFilterSettings(QVariantMap predefinedfiltersettings);
+
+    void realoadFromTheDataSourceForced();
+
+
+    void showThisCoordinate(QString c);
 
 private slots:
 
@@ -74,13 +141,24 @@ private:
 
     int calcFontPixelSize();
 
-    bool isQmlReady;
+    struct ThisClassState
+    {
+        bool isQmlReady;
 
 
-    bool isReadOnly;
+        bool isReadOnly;
 
-    QString lastLang;
-    QTemporaryDir tmpDir;
+        QString lastLang;
+
+//data filter group
+        QVariantMap mapdefaultgroupmethod;//group to image color
+        QVariantMap predefinedgroupmethod;//group to image paths
+        QString dataFilterSettingsName;
+
+        ThisClassState() : isQmlReady(false), isReadOnly(true) {}
+    } mstate;
+
+
 };
 
 #endif // MAPWIDGET_H

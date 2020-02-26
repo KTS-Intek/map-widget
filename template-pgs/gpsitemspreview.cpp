@@ -180,15 +180,22 @@ void GpsItemsPreview::on_tbShowMap_clicked()
 
         connect(this, SIGNAL(showMap(QString))  , w, SLOT(showMap(QString)) );
 
-        connect(this, SIGNAL(setNewDeviceModel(QVariantList)), w, SIGNAL(setNewDeviceModel(QVariantList))   );
-        connect(this, SIGNAL(showThisDeviceNI(QString))      , w, SIGNAL(showThisDeviceNI(QString))         );
-//        connect(editWdgt, SIGNAL(showThisDev(QString))       , w, SIGNAL(showThisCoordinates(QString))      );
+
+        connect(this, &GpsItemsPreview::setCoordinatorPosition, w, &MapWidget::setCoordinatorPosition);
+        connect(this, &GpsItemsPreview::setTableDataExt, w, &MapWidget::setTableDataExt);
+        connect(this, &GpsItemsPreview::setModelHeaderDataRoles, w, &MapWidget::setModelHeaderDataRoles);
+
+
+        connect(w, &MapWidget::mapIsReady, this, &GpsItemsPreview::onModelChanged);
+        connect(this, &GpsItemsPreview::showThisDeviceKeyValue, w, &MapWidget::showThisDeviceKeyValue);
+
+
+//        connect(editWdgt, SIGNAL(showThisDev(QString))       , w, SIGNAL(showThisCoordinate(QString))      );
 
         connect(w, SIGNAL(showThisDev(QString))         , this, SLOT(showThisDev(QString))          );
         connect(w, SIGNAL(showContextMenu4thisDev(QString)), this, SLOT(showContextMenu4thisDev(QString)));
         connect(w, SIGNAL(showThisDevInSource(QString)), this, SLOT(showThisDevInSource(QString)));
 
-        connect(w, SIGNAL(updateModel4ls())             , this, SLOT(onModelChanged())              );
         connect(w, SIGNAL(removeDevice(QString))        , this, SLOT(removeDevice(QString))         );
         connect(w, SIGNAL(moveDevice(QVariantHash))     , this, SLOT(moveDevice(QVariantHash)) );
 //        connect(w, SIGNAL(addDeviceStreet(QVariantHash)), editWdgt, SLOT(addDeviceStreet(QVariantHash)) );
@@ -203,57 +210,37 @@ void GpsItemsPreview::on_tbShowMap_clicked()
 
 void GpsItemsPreview::onModelChanged()
 {
-    QVariantList vl;
 
-    //tr("Model,NI,Group,Last Exchange,Power [%],Start Power [%],NA Power [%],Tna [sec],Coordinate,Poll On/Off,Street,Memo") ;
+    const QList<int> hiddenCols = QList<int>();
+    const QList<int> rowsList = StandardItemModelHelper::getSourceRows(WidgetsHelper::getRowsListTo(proxy_model->rowCount()), proxy_model);//  ;
+    int valCounter;///unused
 
-    //return tr("Model,Serial Number,NI,Memo,Password,On/Off,Energy,Tariff                  ,Coordinate,Meter Version")
-//    return tr("Model,Serial Number,NI,Memo, Profile,On/Off,Input , Disable Time Adjustment,Coordinate,Meter Version");
+    const QStringList headerlist = StandardItemModelHelper::modelHeaderListWithRowID(model, hiddenCols);
+    QStringList heaaderroles;
+    for(int i = 0, imax = headerlist.size(); i < imax; i++)
+        heaaderroles.append(0);
 
-    const QStringList l4app = QString("ni pos pll img").split(" ");
-    const QList<int> l4appIndx = QList<int>() << 2 << 8 << 5 ; //-1
+    heaaderroles.replace(0, QString::number(BaseMapMarkersModel::itmmarkertxt));
 
+    heaaderroles.replace(3, QString::number(BaseMapMarkersModel::itmkeyvaluetxt));//NI
+    heaaderroles.replace(9, QString::number(BaseMapMarkersModel::coordinatevar));
 
-    for(int i = 0, iMax = proxy_model->rowCount(), lMax = l4appIndx.size(); i < iMax; i++){
-        int row = proxy_model->mapToSource(proxy_model->index(i, 0)).row();
-        QVariantHash h;
-        for(int l = 0; l < lMax; l++)//службова інформація
-            h.insert(l4app.at(l), model->item(row, l4appIndx.at(l))->text());
+//    const QStringList l4app = QString("ni pos pll img").split(" ");
+//    const QList<int> l4appIndx = QList<int>() << 2 << 8 << 5 ; //-1
 
-        QString tltp = QString("ID: <b>%1</b>, Street: %2").arg(model->item(row, 2)->text()).arg(model->item(row, 1)->text());
-
-        if(!model->item(row, 3)->text().isEmpty())
-            tltp.append(tr("<br>%1").arg(model->item(row, 3)->text()));
-
-        if(!model->item(row, 9)->text().isEmpty())
-            tltp.append(tr("<br>Version: %1").arg(model->item(row, 9)->text()));
-        h.insert("grp", model->item(row, 0)->text() + "\t" + model->item(row, 9)->text());
-        tltp.append("<br>");
-        h.insert("tltp", tltp);
-        h.insert("rowid", row + 1);
-        if(h.value("pos").toString().isEmpty())//якщо нема координат, то і нема чого показувать
-            continue;
-        vl.append(h);
-    }
+    emit setModelHeaderDataRoles(heaaderroles.join("\n"));
+    const MPrintTableOut out = StandardItemModelHelper::getModelAsVector(model, proxy_model, hiddenCols, rowsList, true, valCounter);
 
 
-    if(!lDevInfo->matildaDev.coordinatesIsDefault){
-        QVariantHash h;
-        h.insert("pos", QString("%1,%2").arg(QString::number(lDevInfo->matildaDev.coordinates.x(), 'f', 6)).arg(QString::number(lDevInfo->matildaDev.coordinates.y(), 'f', 6)) );
-        h.insert("isMatilda", true);
-        h.insert("rowid", "Z");
-        h.insert("ni", tr("Universal Communicator"));
-        h.insert("tltp", h.value("ni").toString() + tr("<br>S/N: %1<br>").arg(lDevInfo->matildaDev.lastSerialNumber));
-        vl.prepend(h);
-    }
+
+    emit setTableDataExt(out, headerlist, 3);
+    if(!lDevInfo->matildaDev.coordinatesIsDefault)//must be sent after table data
+        emit setCoordinatorPosition(lDevInfo->matildaDev.coordinates.x(),lDevInfo->matildaDev.coordinates.y(), lDevInfo->matildaDev.lastSerialNumber );
 
 
-    emit setNewDeviceModel(vl);
-
-    const int row = proxy_model->mapToSource(ui->tvTable->currentIndex()).row();
-    if(row < 0)
-        return;
-    emit showThisDeviceNI(model->item(row, 2)->text());
+//    if(row < 0)
+//        return;
+//    emit showThisDeviceKeyValue(model->item(row, 2)->text());
 }
 
 void GpsItemsPreview::on_tvTable_customContextMenuRequested(const QPoint &pos)

@@ -27,9 +27,14 @@ signals:
 
 
     /// to map
-    void setNewDeviceModel(QVariantList vl);
+    void setTableData(const MPrintTableOut &table, const int &keycol);//first line is a header
+    void setTableDataExt(const MPrintTableOut &table, const QStringList &header, const int &keycol);
+    void setCoordinatorPosition(qreal x, qreal y, QString sn);
 
-    void showThisDeviceNI(QString ni);
+
+    void setModelHeaderDataRoles(QString columnroles);// list joined with '\n'
+
+    void showThisDeviceKeyValue(QString keyvalue);
 
 
     void onImportMetersFromFile();
