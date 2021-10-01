@@ -8,6 +8,7 @@
 
 ///[!] qml-geo I need just roles
 #include "qml-geo-v2/basemapmarkersmodel.h"
+#include "qml-geo-v2/mygeoconverthelper.h"
 
 struct LastPageSettIcoList
 {
@@ -33,10 +34,6 @@ public:
     explicit MapWidget(bool isReadOnly = false, const QString mapTitle = "", QWidget *parent = 0);
     ~MapWidget();
 
-
-    static bool tablePageSett2predefined(const QVariantHash &h, const int &column2group, QVariantMap &cachedmap);//true has changes, false - nothing changed
-
-    static bool tablePageSett2predefinedExt(const QVariantHash &h, const QVector<int> &columns2groups, QVariantMap &cachedmap);//true has changes, false - nothing changed
 
 signals:
 
@@ -127,6 +124,11 @@ public slots:
 
 
     void showThisCoordinate(QString c);
+
+
+
+
+
 
 private slots:
 

@@ -8,6 +8,10 @@
 #
 #
 
+
+DEFINES += HAS_MAP_WIDGETS
+
+
 INCLUDEPATH  += $$PWD\
                 $$PWD/../../defines/defines
                 $$PWD/../../defines/define-types

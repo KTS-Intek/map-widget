@@ -14,7 +14,6 @@
 
 
 ///[!] qml-geo
-//#include "qml-geo/qml2cpp.h"
 #include "qml-geo-v2/qmlgeo2cppmedium.h"
 #include "qml-geo-v2/mygeoconverthelper.h"
 
@@ -24,6 +23,7 @@ MapWidget::MapWidget(bool isReadOnly, const QString mapTitle, QWidget *parent) :
     ui(new Ui::MapWidget)
 {
     ui->setupUi(this);
+
 
 
     mstate.isReadOnly = isReadOnly;
@@ -38,81 +38,6 @@ MapWidget::~MapWidget()
 {
 
     delete ui;
-}
-//---------------------------------------------------------------------------------------------------------
-bool MapWidget::tablePageSett2predefined(const QVariantHash &h, const int &column2group, QVariantMap &cachedmap)
-{
-   return tablePageSett2predefinedExt(h, QVector<int>() << column2group, cachedmap);
-}
-//---------------------------------------------------------------------------------------------------------
-bool MapWidget::tablePageSett2predefinedExt(const QVariantHash &h, const QVector<int> &columns2groups, QVariantMap &cachedmap)
-{
-    bool r = false;
-    const int columns2groupsLen = columns2groups.size();
-    if(h.value("hasHeader").toBool()){
-        r = !cachedmap.isEmpty();
-        cachedmap.clear();
-
-        QStringList cols;
-        for(int i = 0; i < columns2groupsLen; i++)
-            cols.append(QString::number(columns2groups.at(i)));
-
-        cachedmap.insert("cols", cols);
-    }
-
-/*
- * cachedmap struct
- * cols - QSL groupped columns
- *
- * data QVM - <grouped values to image paths>
-*/
-
-
-    if(h.value("ico", -1).toInt() < 0)
-        return false;//there is no such data
-
-
-
-    const QStringList icoList = h.value("icos").toStringList();
-
-    const QVariantList meters = h.value("meters").toList();
-
-    QVariantMap mapdata = cachedmap.value("data").toMap();
-
-    for(int i = 0, iMax = meters.size(); i < iMax; i++){
-
-        const QStringList l = meters.at(i).toStringList();
-
-        QStringList grpdl;
-        for(int j = 0; j < columns2groupsLen; j++)
-            grpdl.append(l.at(columns2groups.at(j)));
-
-        const QString grpline = grpdl.join("\n");
-        if(mapdata.contains(grpline))
-            continue;
-
-        if(!r)
-            r = true;
-
-
-        const QString path2ico = icoList.at(i);
-        QString pathpreffix;
-        if(!path2ico.startsWith("qrc:") && !path2ico.startsWith("file:")){
-            if(path2ico.startsWith(":/")){//internal resource
-                pathpreffix = "qrc";
-            }else{
-                pathpreffix = QString("file://");
-                if(!path2ico.startsWith("/"))
-                    pathpreffix.append("/");
-            }
-        }
-        mapdata.insert(grpline, pathpreffix + path2ico);
-
-    }
-    if(r){
-        cachedmap.insert("data", mapdata);
-    }
-    return r;
 }
 //---------------------------------------------------------------------------------------------------------
 void MapWidget::showMap(QString lastLang)
@@ -279,6 +204,8 @@ void MapWidget::showThisCoordinate(QString c)
         return;
     emit  centerMapHere(pos);
 }
+
+
 
 //---------------------------------------------------------------------------------------------------------
 

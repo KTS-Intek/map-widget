@@ -10,7 +10,7 @@
 
 ///[!] guisett-shared-core
 #include "src/nongui/settloader.h"
-#include "src/nongui/showmesshelpercore.h"
+#include "src/nongui/showmessagehelpercore.h"
 #include "src/nongui/tableheaders.h"
 
 
@@ -42,14 +42,14 @@ void GpsItemsPreview::initPage()
     setupObjects(ui->horizontalLayout_61, ui->tvTable, ui->tbFilter, ui->cbFilterMode, ui->leFilter, SETT_FILTERS_ITEMS_GPSPOS);
     connect(this, SIGNAL(openContextMenu(QPoint)), this, SLOT(on_tvTable_customContextMenuRequested(QPoint)));
 
-    connectMessSignal();
+    connectMessageSignal();
     clearPage();
 
     connect(ui->pbClose, SIGNAL(clicked(bool)), this, SLOT(deleteLater()) );
 
     QShortcut *s = new QShortcut(QKeySequence(Qt::Key_Escape), this);
     connect(s, SIGNAL(activated()), this, SLOT(deleteLater())) ;
-    connectModelSignalWithGuiHelper(CLBRD_ITMSGPS_LIST);
+ //   connectModelSignalWithGuiHelper(CLBRD_ITMSGPS_LIST);
 
     if(!addLater.meters.isEmpty())
         addMeters2list(addLater.replaceAll, addLater.meters);
@@ -57,7 +57,7 @@ void GpsItemsPreview::initPage()
 
 void GpsItemsPreview::clearPage()
 {
-    gHelper->hashUndoHistoryTv.remove(ui->tvTable);
+//    gHelper->hashUndoHistoryTv.remove(ui->tvTable);
 //    ui->cbAddMeterModel->clear();
     ui->tbFilter->setEnabled(true);
     ui->leFilter->clear();
@@ -75,8 +75,8 @@ void GpsItemsPreview::setPageSett(const QVariantHash &h)
 {
 
     StandardItemModelHelper::append2model(h, model);
-    setHasDataFromRemoteDevice();
-    emit resizeTv2content(ui->tvTable);
+    setHasDataFromRemoteDevice(QDateTime::currentDateTime());
+//    emit resizeTv2content(ui->tvTable);
 }
 
 void GpsItemsPreview::showThisDev(QString ni)
@@ -113,7 +113,7 @@ void GpsItemsPreview::removeDevice(QString ni)
 
     if(row < 0)
         return;
-    gHelper->deleteTheseRowsFromTv(QList<int>() << row , ui->tvTable, model);
+//    gHelper->deleteTheseRowsFromTv(QList<int>() << row , ui->tvTable, model);
     sayModelChanged();
 }
 
@@ -139,7 +139,7 @@ void GpsItemsPreview::addMeters2list(bool replaceAll, QVariantHash meters)
     QAction *a = new QAction(menu);
     if(replaceAll || model->rowCount() < 1)
         StandardItemModelHelper::setModelHorizontalHeaderItems(model, getHeader4meterType());
-    gHelper->hashData2table(meters, a);
+//    gHelper->hashData2table(meters, a);
     menu->deleteLater();
     sayModelChangedLater();
 
@@ -229,13 +229,15 @@ void GpsItemsPreview::onModelChanged()
 //    const QList<int> l4appIndx = QList<int>() << 2 << 8 << 5 ; //-1
 
     emit setModelHeaderDataRoles(heaaderroles.join("\n"));
-    const MPrintTableOut out = StandardItemModelHelper::getModelAsVector(model, proxy_model, hiddenCols, rowsList, true, valCounter);
+    const MPrintTableOut out = StandardItemModelHelper::getModelAsVector(model, hiddenCols, rowsList, true, valCounter);
 
 
 
     emit setTableDataExt(out, headerlist, 3);
-    if(!lDevInfo->matildaDev.coordinatesIsDefault)//must be sent after table data
-        emit setCoordinatorPosition(lDevInfo->matildaDev.coordinates.x(),lDevInfo->matildaDev.coordinates.y(), lDevInfo->matildaDev.lastSerialNumber );
+    const UCAboutDeviceSettings devInfo = gHelper->ucDeviceTreeW->getCachedUCAboutDeviceSettings();
+
+    if(!devInfo.validator.dtlastupdate.isValid()) //must be sent after table data
+        emit setCoordinatorPosition(devInfo.coordinate.x(), devInfo.coordinate.y(), gHelper->ucDeviceTreeW->getCachedUCSystemInfo().SN );
 
 
 //    if(row < 0)
@@ -245,6 +247,6 @@ void GpsItemsPreview::onModelChanged()
 
 void GpsItemsPreview::on_tvTable_customContextMenuRequested(const QPoint &pos)
 {
-    gHelper->createCustomMenu(pos, ui->tvTable, (GuiHelper::ShowReset|GuiHelper::ShowExport|GuiHelper::ShowOnlyCopy), CLBRD_SMPL_PRXTBL, ShowMessHelperCore::matildaFileName(windowTitle()));
+//    gHelper->createCustomMenu(pos, ui->tvTable, (GuiHelper::ShowReset|GuiHelper::ShowExport|GuiHelper::ShowOnlyCopy), CLBRD_SMPL_PRXTBL, ShowMessageHelperCore::matildaFileName(windowTitle()));
 
 }
