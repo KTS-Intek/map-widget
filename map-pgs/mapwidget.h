@@ -31,9 +31,10 @@ class MapWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit MapWidget(bool isReadOnly = false, const QString mapTitle = "", QWidget *parent = 0);
+    explicit MapWidget(bool isReadOnly = false, const QString mapTitle = "", const bool &verboseMode = false, QWidget *parent = 0);
     ~MapWidget();
 
+    bool verboseMode;
 
 signals:
 

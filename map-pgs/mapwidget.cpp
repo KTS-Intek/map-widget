@@ -18,14 +18,14 @@
 #include "qml-geo-v2/mygeoconverthelper.h"
 
 //---------------------------------------------------------------------------------------------------------
-MapWidget::MapWidget(bool isReadOnly, const QString mapTitle, QWidget *parent) :
+MapWidget::MapWidget(bool isReadOnly, const QString mapTitle, const bool &verboseMode, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MapWidget)
 {
     ui->setupUi(this);
 
 
-
+    this->verboseMode = verboseMode;
     mstate.isReadOnly = isReadOnly;
 
     if(mapTitle.isEmpty())
@@ -76,7 +76,7 @@ void MapWidget::showMap(QString lastLang)
     view->rootContext()->setContextProperty("supportsSsl", false);
 #endif
 
-        QmlGeo2cppMedium *qmlGeoCppMedium = new QmlGeo2cppMedium(parameters, true, this);
+        QmlGeo2cppMedium *qmlGeoCppMedium = new QmlGeo2cppMedium(parameters, verboseMode, this);
 
 
 
@@ -146,7 +146,8 @@ void MapWidget::addDeviceStreetSlot(QVariantHash h)
     if(!h.value("simpleText").toString().isEmpty())
         emit addDeviceStreetLine(h.value("simpleText").toString());
 
-    qDebug() << "MapWidget::addDeviceStreetSlot(QVariantHash h) " << h;
+    if(verboseMode)
+        qDebug() << "MapWidget::addDeviceStreetSlot(QVariantHash h) " << h;
     //    h.insert("pos", QString("%1,%2").arg(QString::number(c.latitude(),'f', 6)).arg(QString::number(c.longitude(),'f', 6)));
 
 }
@@ -170,7 +171,8 @@ void MapWidget::moveDeviceStr(QString keyval, QString pos)
 void MapWidget::setNewDeviceModel(QVariantList vl)
 {
     //obsolete
-    qDebug() << "MapWidget::setNewDeviceMode " << vl;
+    if(verboseMode)
+        qDebug() << "MapWidget::setNewDeviceMode " << vl;
 }
 
 //---------------------------------------------------------------------------------------------------------
