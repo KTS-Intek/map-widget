@@ -175,7 +175,7 @@ void GpsItemsPreview::on_tbShowMap_clicked()
         connect(proxy_model, SIGNAL(onModelChanged()), tmrModelChanged, SLOT(start()) );
         connect(tmrModelChanged, SIGNAL(timeout()), this, SLOT(onModelChanged()) );
 
-        MapWidget *w = new MapWidget;
+        MapWidget *w = new MapWidget(false, false, "", gHelper->verboseMode, nullptr);
         ui->vlQmlMap->addWidget(w);
 
         connect(this, SIGNAL(showMap(QString))  , w, SLOT(showMap(QString)) );
@@ -232,12 +232,12 @@ void GpsItemsPreview::onModelChanged()
     const MPrintTableOut out = StandardItemModelHelper::getModelAsVector(model, hiddenCols, rowsList, true, valCounter);
 
 
-
-    emit setTableDataExt(out, headerlist, 3);
     const UCAboutDeviceSettings devInfo = gHelper->ucDeviceTreeW->getCachedUCAboutDeviceSettings();
 
     if(!devInfo.validator.dtlastupdate.isValid()) //must be sent after table data
         emit setCoordinatorPosition(devInfo.coordinate.x(), devInfo.coordinate.y(), gHelper->ucDeviceTreeW->getCachedUCSystemInfo().SN );
+
+    emit setTableDataExt(out, headerlist, 3);
 
 
 //    if(row < 0)

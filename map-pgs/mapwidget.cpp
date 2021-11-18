@@ -18,7 +18,7 @@
 #include "qml-geo-v2/mygeoconverthelper.h"
 
 //---------------------------------------------------------------------------------------------------------
-MapWidget::MapWidget(bool isReadOnly, const QString mapTitle, const bool &verboseMode, QWidget *parent) :
+MapWidget::MapWidget(const bool &allow2useDevPosCalcualtion, const bool &isReadOnly, const QString &mapTitle, const bool &verboseMode, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MapWidget)
 {
@@ -27,6 +27,7 @@ MapWidget::MapWidget(bool isReadOnly, const QString mapTitle, const bool &verbos
 
     this->verboseMode = verboseMode;
     mstate.isReadOnly = isReadOnly;
+    mstate.allow2useDevPosCalcualtion = allow2useDevPosCalcualtion;
 
     if(mapTitle.isEmpty())
         ui->widget->hide();
@@ -60,6 +61,7 @@ void MapWidget::showMap(QString lastLang)
         parameters.group_name = "mapping";
         parameters.isReadOnly = mstate.isReadOnly;
 
+
 //        parameters.insert("lang", lastLang);
 //        QString p = (tmpDir.isValid()) ? tmpDir.path() : QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/qml-geo-" + QTime::currentTime().msecsSinceStartOfDay();
 //        parameters.insert("work-dir",  "");
@@ -79,6 +81,7 @@ void MapWidget::showMap(QString lastLang)
         QmlGeo2cppMedium *qmlGeoCppMedium = new QmlGeo2cppMedium(parameters, verboseMode, this);
 
 
+        qmlGeoCppMedium->pagesett.allow2useDevPosCalcualtion = mstate.allow2useDevPosCalcualtion;
 
 //        connect(qmlGeoCppMedium, &QmlGeo2cppMedium::moveDevice              , this, &MapWidget::moveDevice);
 //        connect(qmlGeoCppMedium, &QmlGeo2cppMedium::addDeviceStreet         , this, &MapWidget::addDeviceStreet);

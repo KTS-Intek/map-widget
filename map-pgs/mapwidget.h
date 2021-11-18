@@ -31,7 +31,7 @@ class MapWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit MapWidget(bool isReadOnly = false, const QString mapTitle = "", const bool &verboseMode = false, QWidget *parent = 0);
+    explicit MapWidget(const bool &allow2useDevPosCalcualtion, const bool &isReadOnly, const QString &mapTitle, const bool &verboseMode, QWidget *parent);
     ~MapWidget();
 
     bool verboseMode;
@@ -150,6 +150,7 @@ private:
 
 
         bool isReadOnly;
+        bool allow2useDevPosCalcualtion;
 
         QString lastLang;
 
@@ -158,7 +159,7 @@ private:
         QVariantMap predefinedgroupmethod;//group to image paths
         QString dataFilterSettingsName;
 
-        ThisClassState() : isQmlReady(false), isReadOnly(true) {}
+        ThisClassState() : isQmlReady(false), isReadOnly(true), allow2useDevPosCalcualtion(false) {}
     } mstate;
 
 
