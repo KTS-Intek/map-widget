@@ -29,6 +29,8 @@ MapWidget::MapWidget(const bool &allow2useDevPosCalcualtion, const bool &isReadO
     mstate.isReadOnly = isReadOnly;
     mstate.allow2useDevPosCalcualtion = allow2useDevPosCalcualtion;
 
+    QmlGeo2cppMedium::registerQmlTypes();
+
     if(mapTitle.isEmpty())
         ui->widget->hide();
     else
