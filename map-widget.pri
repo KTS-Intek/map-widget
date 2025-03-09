@@ -13,7 +13,7 @@ DEFINES += HAS_MAP_WIDGETS
 
 
 INCLUDEPATH  += $$PWD\
-                $$PWD/../../defines/defines
+                $$PWD/../../defines/defines\
                 $$PWD/../../defines/define-types
 
 include(../qml-geo/qml-geo.pri)
